@@ -43766,6 +43766,8 @@ var _IconsStorage = require('./IconsStorage');
 
 var _IconsStorage2 = _interopRequireDefault(_IconsStorage);
 
+// import Radium from 'radium';
+
 var _radium = require('radium');
 
 var _radium2 = _interopRequireDefault(_radium);
@@ -43796,6 +43798,9 @@ var MaterialUiIconPicker = (function (_React$Component) {
 			selectedBackgroundBox.opacity = 1;
 
 			return {
+				customButton: {
+					cursor: 'pointer'
+				},
 				iconsGrid: {
 					display: 'flex',
 					flexWrap: 'wrap'
@@ -43819,6 +43824,7 @@ var MaterialUiIconPicker = (function (_React$Component) {
 					whiteSpace: 'nowrap',
 					overflow: 'hidden',
 					textOverflow: 'ellipsis',
+					display: 'none',
 					position: 'relative',
 					zIndex: 2,
 					maxWidth: 100
@@ -44041,55 +44047,62 @@ var MaterialUiIconPicker = (function (_React$Component) {
 					)
 				);
 			});
-
 			return _react2['default'].createElement(
 				_materialUiStylesMuiThemeProvider2['default'],
 				null,
 				_react2['default'].createElement(
-					'div',
+					_radium.StyleRoot,
 					null,
-					_react2['default'].createElement(_materialUi.RaisedButton, { onClick: this.handleOpen.bind(this), label: this.props.label, primary: true }),
 					_react2['default'].createElement(
-						_materialUi.Dialog,
-						{
-							autoScrollBodyContent: true,
-							title: _react2['default'].createElement(
-								'div',
-								{ style: styles.header.wrapper },
-								_react2['default'].createElement(
-									'h3',
-									{ style: styles.header.title },
-									this.props.modalTitle
-								),
-								_react2['default'].createElement(
-									'div',
-									{ style: styles.header.search },
-									_react2['default'].createElement(
-										_materialUi.FontIcon,
-										{ className: 'material-icons', style: styles.header.searchIcon },
-										'search'
-									),
-									_react2['default'].createElement('input', { ref: 'searchInput', type: 'text', style: styles.header.input,
-										placeholder: 'Search',
-										onChange: this.filterList.bind(this) }),
-									this.state.didSearch ? _react2['default'].createElement(
-										_materialUi.FontIcon,
-										{ style: styles.header.closeIcon, onClick: this.clearSearch.bind(this),
-											className: 'material-icons' },
-										'close'
-									) : null
-								)
-							),
-							actions: actions,
-							modal: false,
-							open: this.state.pickerDialogOpen,
-							onRequestClose: this.handleClose.bind(this)
-						},
-						this.state.icons.length > 0 ? _react2['default'].createElement(
+						'div',
+						null,
+						this.props.children ? _react2['default'].createElement(
 							'div',
-							{ style: styles.iconsGrid },
-							icons
-						) : _react2['default'].createElement(_materialUi.LinearProgress, { mode: 'indeterminate' })
+							{ onClick: this.handleOpen.bind(this), label: this.props.label, primary: true, style: styles.customButton },
+							this.props.children
+						) : _react2['default'].createElement(_materialUi.RaisedButton, { onClick: this.handleOpen.bind(this), label: this.props.label, primary: true }),
+						_react2['default'].createElement(
+							_materialUi.Dialog,
+							{
+								autoScrollBodyContent: true,
+								title: _react2['default'].createElement(
+									'div',
+									{ style: styles.header.wrapper },
+									_react2['default'].createElement(
+										'h3',
+										{ style: styles.header.title },
+										this.props.modalTitle
+									),
+									_react2['default'].createElement(
+										'div',
+										{ style: styles.header.search },
+										_react2['default'].createElement(
+											_materialUi.FontIcon,
+											{ className: 'material-icons', style: styles.header.searchIcon },
+											'search'
+										),
+										_react2['default'].createElement('input', { ref: 'searchInput', type: 'text', style: styles.header.input,
+											placeholder: 'Search',
+											onChange: this.filterList.bind(this) }),
+										this.state.didSearch ? _react2['default'].createElement(
+											_materialUi.FontIcon,
+											{ style: styles.header.closeIcon, onClick: this.clearSearch.bind(this),
+												className: 'material-icons' },
+											'close'
+										) : null
+									)
+								),
+								actions: actions,
+								modal: false,
+								open: this.state.pickerDialogOpen,
+								onRequestClose: this.handleClose.bind(this)
+							},
+							this.state.icons.length > 0 ? _react2['default'].createElement(
+								'div',
+								{ style: styles.iconsGrid },
+								icons
+							) : _react2['default'].createElement(_materialUi.LinearProgress, { mode: 'indeterminate' })
+						)
 					)
 				)
 			);
@@ -44104,7 +44117,8 @@ MaterialUiIconPicker.propTypes = {
 	label: _propTypes2['default'].string,
 	modalTitle: _propTypes2['default'].string,
 	onPick: _propTypes2['default'].func.isRequired,
-	pickLabel: _propTypes2['default'].string
+	pickLabel: _propTypes2['default'].string,
+	children: _propTypes2['default'].node
 };
 
 MaterialUiIconPicker.defaultProps = {

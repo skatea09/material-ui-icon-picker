@@ -3,7 +3,9 @@ import {RaisedButton, FlatButton, Dialog, FontIcon, LinearProgress} from 'materi
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import PropTypes from 'prop-types';
 import IconsStorage from './IconsStorage';
-import Radium from 'radium';
+// import Radium from 'radium';
+import Radium, {StyleRoot} from 'radium';
+
 
 class MaterialUiIconPicker extends React.Component {
 
@@ -31,6 +33,9 @@ class MaterialUiIconPicker extends React.Component {
 		selectedBackgroundBox.opacity = 1;
 
 		return {
+			customButton: {
+				cursor: 'pointer'
+			},
 			iconsGrid: {
 				display: 'flex',
 				flexWrap: 'wrap'
@@ -54,9 +59,10 @@ class MaterialUiIconPicker extends React.Component {
 				whiteSpace: 'nowrap',
 				overflow: 'hidden',
 				textOverflow: 'ellipsis',
+				display: 'none',
 				position: 'relative',
 				zIndex: 2,
-				maxWidth: 100
+				maxWidth: 100,
 			},
 			iconsItemIcon: {
 				color: 'rgb(117, 117, 117)',
@@ -142,7 +148,7 @@ class MaterialUiIconPicker extends React.Component {
 		this.iconsPromise = this.iconsStorage.getIcons();
 		this.iconsPromise.then(icons => this.showIcons(icons));
 	}
-	
+
 	showIcons(icons) {
 		this.setState({pickerDialogOpen: this.state.pickerDialogOpen, _icons: icons, icons: icons});
 	}
@@ -238,46 +244,52 @@ class MaterialUiIconPicker extends React.Component {
 		const icons = this.state.icons.map((icon, index) => {
 			return (<div key={index} style={styles.iconsItem} onClick={() => this.select(icon)}>
 				<div
-					style={this.state.selected && this.state.selected.name === icon.name ? styles.selectedBackgroundBox : styles.backgroundBox}></div>
+					style={this.state.selected && this.state.selected.name === icon.name ? styles.selectedBackgroundBox : styles.backgroundBox} />
 				<FontIcon style={styles.iconsItemIcon} className="material-icons">{icon.name}</FontIcon>
 				<div style={styles.iconsItemCaption}>{icon.name.split('_').join(' ')}</div>
 			</div>);
 		});
-
 		return (
 			<MuiThemeProvider>
-				<div>
-					<RaisedButton onClick={this.handleOpen.bind(this)} label={this.props.label} primary/>
+				<StyleRoot>
+					<div>
+						{this.props.children ?
+							<div onClick={this.handleOpen.bind(this)} label={this.props.label} primary style={styles.customButton}>
+								{this.props.children}
+							</div> :
+							<RaisedButton onClick={this.handleOpen.bind(this)} label={this.props.label} primary/>
+						}
 
-					<Dialog
-						autoScrollBodyContent
-						title={
-							<div style={styles.header.wrapper}>
-								<h3 style={styles.header.title}>{this.props.modalTitle}</h3>
-								<div style={styles.header.search}>
-									<FontIcon className="material-icons" style={styles.header.searchIcon}>search</FontIcon>
-									<input ref="searchInput" type="text" style={styles.header.input}
-										   placeholder="Search"
-										   onChange={this.filterList.bind(this)}/>
-									{this.state.didSearch ? <FontIcon style={styles.header.closeIcon} onClick={this.clearSearch.bind(this)}
-																	  className="material-icons">close</FontIcon> : null}
+
+						<Dialog
+							autoScrollBodyContent
+							title={
+								<div style={styles.header.wrapper}>
+									<h3 style={styles.header.title}>{this.props.modalTitle}</h3>
+									<div style={styles.header.search}>
+										<FontIcon className="material-icons" style={styles.header.searchIcon}>search</FontIcon>
+										<input ref="searchInput" type="text" style={styles.header.input}
+											   placeholder="Search"
+											   onChange={this.filterList.bind(this)}/>
+										{this.state.didSearch ? <FontIcon style={styles.header.closeIcon} onClick={this.clearSearch.bind(this)}
+																		  className="material-icons">close</FontIcon> : null}
+									</div>
 								</div>
-							</div>
-						}
-						actions={actions}
-						modal={false}
-						open={this.state.pickerDialogOpen}
-						onRequestClose={this.handleClose.bind(this)}
-					>
-						{this.state.icons.length > 0 
-							? <div style={styles.iconsGrid}>{icons}</div>
-							: <LinearProgress mode="indeterminate" />
-						}
+							}
+							actions={actions}
+							modal={false}
+							open={this.state.pickerDialogOpen}
+							onRequestClose={this.handleClose.bind(this)}
+						>
+							{this.state.icons.length > 0
+								? <div style={styles.iconsGrid}>{icons}</div>
+								: <LinearProgress mode="indeterminate" />
+							}
 
-					</Dialog>
-				</div>
+						</Dialog>
+					</div>
 
-
+				</StyleRoot>
 			</MuiThemeProvider>
 		);
 	}
@@ -288,7 +300,8 @@ MaterialUiIconPicker.propTypes = {
 	label: PropTypes.string,
 	modalTitle: PropTypes.string,
 	onPick: PropTypes.func.isRequired,
-	pickLabel: PropTypes.string
+	pickLabel: PropTypes.string,
+	children: PropTypes.node
 };
 
 MaterialUiIconPicker.defaultProps = {
